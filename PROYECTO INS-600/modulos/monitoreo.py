@@ -4,7 +4,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import random
 from datetime import datetime
 import threading
-import winsound # <--- Sonido de sirena (nativo de Windows)
+import winsound
+from tkinter import messagebox # <--- Necesario para el mensaje de silenciar
 
 class Monitoreo(ctk.CTkFrame):
     def __init__(self, master, db):
@@ -75,6 +76,11 @@ class Monitoreo(ctk.CTkFrame):
 
         ctk.CTkButton(self.frame_ctrl, text="🚨 SIMULAR EMERGENCIA MÁXIMA", fg_color="#8B0000", hover_color="#FF0000", 
                       command=self.simular_panico).pack(pady=10, padx=20, fill="x")
+
+        # --- CAMBIO CC-02: Botón de Silenciar ---
+        self.btn_silenciar = ctk.CTkButton(self.frame_ctrl, text="🔇 SILENCIAR ALARMA", fg_color="#FF8C00", hover_color="#CC7000", 
+                                           font=("Arial", 12, "bold"), command=self.silenciar_alarma)
+        self.btn_silenciar.pack(pady=5, padx=20, fill="x")
 
         # Consola LoRa
         self.frame_lora = ctk.CTkFrame(frame_bottom, fg_color="#1a1a1a", corner_radius=10, width=350)
@@ -151,6 +157,11 @@ class Monitoreo(ctk.CTkFrame):
             threading.Thread(target=self.reproducir_sonido, daemon=True).start()
         elif not estado:
             self.alarma_activa = False
+
+    # --- CAMBIO CC-02: Función para silenciar ---
+    def silenciar_alarma(self):
+        self.alarma_activa = False
+        messagebox.showinfo("Alarma Silenciada", "El sonido de la alarma se ha detenido.\nEl semáforo continuará en ROJO indicando el peligro.")
 
     def reproducir_sonido(self):
         while self.alarma_activa:

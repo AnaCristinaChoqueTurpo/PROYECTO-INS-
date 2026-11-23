@@ -31,14 +31,31 @@ class Login(ctk.CTkToplevel):
         self.user = ctk.CTkEntry(self, placeholder_text="👤 Ingrese su usuario", width=300, height=40)
         self.user.pack(pady=10)
         
-        self.password = ctk.CTkEntry(self, placeholder_text="🔒 Ingrese su contraseña", show="*", width=300, height=40)
-        self.password.pack(pady=10)
+        # --- CC-03: Frame para la contraseña y el ojito ---
+        frame_pass = ctk.CTkFrame(self, fg_color="transparent")
+        frame_pass.pack(pady=10)
         
-        # Botón
+        self.password = ctk.CTkEntry(frame_pass, placeholder_text="🔒 Contraseña", show="*", width=240, height=40)
+        self.password.pack(side="left", padx=(0, 10))
+        
+        # Botón del ojito
+        self.btn_ver = ctk.CTkButton(frame_pass, text="👁️", width=40, height=40, fg_color="#333333", hover_color="#555555", command=self.toggle_password)
+        self.btn_ver.pack(side="left")
+        
+        # Botón Ingresar
         ctk.CTkButton(self, text="INGRESAR AL SISTEMA", width=300, height=40, fg_color="#1f538d", font=("Arial", 13, "bold"), command=self.validar).pack(pady=30)
 
         # Footer
         ctk.CTkLabel(self, text="Escuela Industrial Superior Pedro Domingo Murillo", font=("Arial", 9), text_color="gray").pack(side="bottom", pady=10)
+
+    # --- Función para mostrar/ocultar (CC-03) ---
+    def toggle_password(self):
+        if self.password.cget("show") == "*":
+            self.password.configure(show="")
+            self.btn_ver.configure(text="🙈") # Cambia a un monito
+        else:
+            self.password.configure(show="*")
+            self.btn_ver.configure(text="👁️") # Vuelve al ojito
 
     def validar(self):
         u = self.user.get()
